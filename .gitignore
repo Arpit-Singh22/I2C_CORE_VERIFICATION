@@ -1,2 +1,5 @@
-sim/questa_uvm.bat
+sim/*
+!run.do
+!list.svh
+!wave.do
 *.swp

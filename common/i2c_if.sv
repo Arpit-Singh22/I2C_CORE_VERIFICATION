@@ -11,19 +11,15 @@ interface i2c_if (input bit clk, input bit rst_n);
 	logic        wb_ack_o;     // bus cycle acknowledge output
 	logic        wb_inta_o;    // interrupt request signal output
 
-	reg [7:0] wb_dat_o;
-	reg wb_ack_o;
-	reg wb_inta_o;
-
 	// I2C signals
 	// i2c clock line
-	input  scl_pad_i;       // SCL-line input
-	output scl_pad_o;       // SCL-line output (always 1'b0)
-	output scl_padoen_o;    // SCL-line output enable (active low)
+	logic scl_pad_i;       // SCL-line input
+	logic scl_pad_o;       // SCL-line output (always 1'b0)
+	logic scl_padoen_o;    // SCL-line output enable (active low)
 
 	// i2c data line
-	input  sda_pad_i;       // SDA-line input
-	output sda_pad_o;       // SDA-line output (always 1'b0)
-	output sda_padoen_o; 
+	logic sda_pad_i;       // SDA-line input
+	logic sda_pad_o;       // SDA-line output (always 1'b0)
+	logic sda_padoen_o; 
 
 endinterface

@@ -13,7 +13,7 @@ module top;
 		.wb_adr_i(pif.wb_adr_i), 
 		.wb_dat_i(pif.wb_dat_i), 
 		.wb_dat_o(pif.wb_dat_o), 
-		.wb_we_i;(pif.wb_we_i), 
+		.wb_we_i(pif.wb_we_i), 
 		.wb_stb_i(pif.wb_stb_i), 
 		.wb_cyc_i(pif.wb_cyc_i), 
 		.wb_ack_o(pif.wb_ack_o), 
