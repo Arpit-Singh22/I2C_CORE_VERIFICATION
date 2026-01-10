@@ -27,8 +27,6 @@ module top;
 		.sda_pad_i(pif.sda_pad_i), 
 		.sda_pad_o(pif.sda_pad_o), 
 		.sda_padoen_o(pif.sda_padoen_o) 
-endinterface
-	
 );
 	
 	initial begin
