@@ -72,7 +72,8 @@ module i2c_slave_model (scl, sda);
 	//
 	// parameters
 	//
-	parameter I2C_ADR = 7'b001_0000;
+	//parameter I2C_ADR = 7'b001_0000;
+	parameter I2C_ADR = 7'h10;
 
 	//
 	// input && outpus

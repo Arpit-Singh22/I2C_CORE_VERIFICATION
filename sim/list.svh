@@ -13,6 +13,7 @@ import uvm_pkg::*;
 `include "../master/wb_sqr.sv"
 `include "../master/wb_driver.sv"
 `include "../master/wb_monitor.sv"
+`include "../master/wb_cov.sv"
 `include "../master/wb_agent.sv"
 
 `include "../top/i2c_env.sv"

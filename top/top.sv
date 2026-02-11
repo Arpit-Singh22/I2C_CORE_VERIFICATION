@@ -57,5 +57,6 @@ module top;
 	  uvm_config_db#(virtual i2c_if)::set(null, "*", "i2c_bus", i2c_bus);
 	  //run_test("config_clock_test");
 	  run_test("write_test");
+	  //run_test("write_read_test");
 	end
 endmodule

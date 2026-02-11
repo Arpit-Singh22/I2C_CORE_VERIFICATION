@@ -32,3 +32,4 @@ endclass
 
 `I2C_TEST(config_clock_test, config_clock_seq)
 `I2C_TEST(write_test, write_seq)
+`I2C_TEST(write_read_test, write_read_seq)
