@@ -36,7 +36,7 @@ module top;
 		.sda_pad_o		(i2c_bus.sda_pad_o), 
 		.sda_padoen_o	(i2c_bus.sda_padoen_o) 
 );
-	always #20 clk = ~clk;	//25Mhz
+	always #10 clk = ~clk;	//50Mhz
 	initial begin
 		clk = 0;
 		rst_n = 1;
@@ -56,7 +56,7 @@ module top;
 	  uvm_config_db#(virtual wb_if)::set(null, "*", "vif", pif);
 	  uvm_config_db#(virtual i2c_if)::set(null, "*", "i2c_bus", i2c_bus);
 	  //run_test("config_clock_test");
-	  run_test("write_test");
-	  //run_test("write_read_test");
+	  //run_test("write_test");
+	  run_test("write_read_test");
 	end
 endmodule
