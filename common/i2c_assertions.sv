@@ -5,9 +5,29 @@ module i2c_assertions (
     input logic scl_pad_i,
     input logic sda_pad_i
 );
-	//SDA must go from High to Low while SCL is High
-	property start_condition;
-		@(posedge scl_pad_i) disable iff(wb_rst_i) ($fell(sda_pad_i) && scl_pad_i==1'b	1);
+	//to check data is changing only scl is high
+	property valid_bus_change;
+		@(posedge wb_clk_i)
+			(scl_pad_i && $changed(sda_pad_i)) |->
+			($fell(sda_pad_i) || $rose(sda_pad_i));
 	endproperty
-	//START_CONDITION: assert property (start_condition);
+	//VALID_BUS_ASSERT: assert property (valid_bus_change)
+	//			else $error("valid bus change is violated");
+	//VALID_BUS_COVER: cover property (valid_bus_change);
+
+	//start condition
+	property start_cond_prop;
+		@(posedge wb_clk_i) (scl_pad_i && $fell(sda_pad_i)) |-> $fell(sda_pad_i);
+	endproperty
+	
+	START_COND_ASSERT: assert property (start_cond_prop)
+		else $error("incorrect start condition");
+
+	//stop condition
+	property stop_cond_prop;
+		@(posedge wb_clk_i) (scl_pad_i && $rose(sda_pad_i)) |-> $rose(sda_pad_i);
+	endproperty
+
+	STOP_COND_ASSERT: assert property (stop_cond_prop)
+		else $error("incorrect stop condition");
 endmodule

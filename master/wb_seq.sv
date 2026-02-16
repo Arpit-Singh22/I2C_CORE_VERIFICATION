@@ -57,7 +57,6 @@ class write_seq extends base_seq_lib;
 		//start + write
 		`uvm_do_with(req, {req.wr_rd==1; req.addr==`CR; req.data==8'h90;});
 
-		//wait for completion (TIP to clear)
 		wait_for_tip();
 
 		//read RxACK bit
@@ -83,7 +82,6 @@ class write_seq extends base_seq_lib;
 		//set STO + WR
 		`uvm_do_with(req, {req.wr_rd==1; req.addr==`CR; req.data==8'h50;});
 
-		//wait for completion (TIP to clear)
 		wait_for_tip();
 
 		//read RxACK bit
@@ -139,8 +137,6 @@ class write_read_seq extends base_seq_lib;
 			`uvm_info("RD_DATA", "Read back 0xA5", UVM_LOW)
 		else
 			`uvm_error("RD_ERR", $sformatf("Mismatch! Expected 0xA5, got 0x%0h",rsp.data))
-
-		//`uvm_do_with(req, {req.wr_rd==1; req.addr==`CTR; req.data==8'h00;});
 	endtask
 endclass
 
