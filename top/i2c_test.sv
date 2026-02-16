@@ -21,11 +21,9 @@ class TESTNAME extends test_lib; \
 \
 	task run_phase(uvm_phase phase);\
 		SEQ seq = SEQ::type_id::create($sformatf(SEQ));\
-		phase.raise_objection(this);\
 		super.run_phase(phase);\
+		seq.set_starting_phase(phase);\
 		seq.start(env.agt.sqr);\
-		phase.phase_done.set_drain_time(this,2000);\
-		phase.drop_objection(this);\
 	endtask\
 endclass
 
