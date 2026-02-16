@@ -2,6 +2,24 @@ class base_seq_lib extends uvm_sequence#(wb_tx);
 	`uvm_object_utils(base_seq_lib)
 	`NEW_OBJ
 
+	task pre_body();
+		starting_phase = get_starting_phase();
+		if(starting_phase != null)
+			starting_phase.raise_objection(this);
+	endtask
+
+	task post_body();
+		if(starting_phase != null)
+			starting_phase.phase_done.set_drain_time(this,2000);
+			starting_phase.drop_objection(this);
+	endtask
+
+	task wait_for_tip();
+		do begin
+			`uvm_do_with(req, {req.wr_rd==0; req.addr==`SR;});
+			get_response(rsp);
+		end while (rsp.data[1] == 1'b1); // Wait for TIP to clear
+	endtask
 endclass
 
 class config_clock_seq extends base_seq_lib;
@@ -11,18 +29,17 @@ class config_clock_seq extends base_seq_lib;
 	task body();
 	//initialize core
 		//clk = 50 MHz
-		//SCL = 50KHz 
-		//PRE = 1000 = 0110_1000 = 3E8 
-		//clk = 25 MHz
-		//SCL = 100KHz 
-		//PRE = 49 = 31(hex)
+		//SCL = 40KHz 
+		//PRER = (WB_CLK /(5*SCL))-1 =
+		//PRE = 249 = F9(hex)
 		//disable core
 		`uvm_do_with(req, {req.wr_rd==1; req.addr==`CTR; req.data==8'h00;});
-		`uvm_do_with(req, {req.wr_rd==1; req.addr==`PRERLo; req.data==8'h31;});
+		`uvm_do_with(req, {req.wr_rd==1; req.addr==`PRERLo; req.data==8'hF9;});
 		`uvm_do_with(req, {req.wr_rd==1; req.addr==`PRERHi; req.data==8'h00;});
 		`uvm_do_with(req, {req.wr_rd==1; req.addr==`CTR; req.data==8'hC0;});
 	endtask
 endclass
+
 
 class write_seq extends base_seq_lib;
 	`uvm_object_utils(write_seq)
@@ -32,33 +49,49 @@ class write_seq extends base_seq_lib;
 	task body();
 		`uvm_do(clock_seq)
 
-		//start write transfer 
-		//start + write
-		`uvm_do_with(req, {req.wr_rd==1; req.addr==`CR; req.data==8'h90;});
+		//------------------------------------------------------
+		//WRITE ADDRESS TO SLAVE
+		//------------------------------------------------------
 		//load slave address + W bit
 		`uvm_do_with(req, {req.wr_rd==1; req.addr==`TXR; req.data=={7'h10,1'b0};});
-
+		//start + write
+		`uvm_do_with(req, {req.wr_rd==1; req.addr==`CR; req.data==8'h90;});
 
 		//wait for completion (TIP to clear)
-		do begin
-			`uvm_do_with(req, {req.wr_rd==0; req.addr==`SR;});
-		end while (req.data[1] == 1'b1);
+		wait_for_tip();
 
-		//Load data
-		`uvm_do_with(req, {req.wr_rd==1; req.addr==`TXR; req.data=={8'hAC};});
+		//read RxACK bit
+		if(rsp.data[7]==1'b1) begin
+			`uvm_error("STATUS_ERR", "Slave NaCK the address")
+			return;
+		end
+		else `uvm_info("SR","slave ack the address", UVM_LOW)
 
-		//write
+		//------------------------------------------------------
+		//SET MEMORY ADDRESS POINTER
+		//------------------------------------------------------
+		//valid memory pointer from 0-15
+		`uvm_do_with(req, {req.wr_rd==1; req.addr==`TXR; req.data==8'h01;});
+		//write only
 		`uvm_do_with(req, {req.wr_rd==1; req.addr==`CR; req.data==8'h10;});
+		wait_for_tip();
+	
+		//------------------------------------------------------
+		//LOAD DATA
+		//------------------------------------------------------
+		`uvm_do_with(req, {req.wr_rd==1; req.addr==`TXR; req.data==8'hA5;});
+		//set STO + WR
+		`uvm_do_with(req, {req.wr_rd==1; req.addr==`CR; req.data==8'h50;});
 
 		//wait for completion (TIP to clear)
-		do begin
-			`uvm_do_with(req, {req.wr_rd==0; req.addr==`SR;});
-		end while (req.data[1] == 1'b1);
+		wait_for_tip();
 
-		//Stop
-		`uvm_do_with(req, {req.wr_rd==1; req.addr==`CR; req.data==8'h40;});
-		//disable core
-		`uvm_do_with(req, {req.wr_rd==1; req.addr==`CTR; req.data==8'h00;});
+		//read RxACK bit
+		if(rsp.data[7]==1'b1) begin
+			`uvm_error("STATUS_ERR", "Slave NaCK the data")
+			return;
+		end
+		else `uvm_info("SR","slave ack the data", UVM_LOW)
 	endtask
 endclass
 
@@ -66,55 +99,48 @@ class write_read_seq extends base_seq_lib;
 	`uvm_object_utils(write_read_seq)
 	`NEW_OBJ
 	config_clock_seq clock_seq;
+	write_seq		 write_seq_inst;
 
 	task body();
 		`uvm_do(clock_seq)
+		`uvm_do(write_seq_inst)
 		
-		//----------------------------------------------
-		//write phase
-		//------------------------------------------------
-		//load slave address + W bit
+		//RESET ADDRESS POINTER TO 0X05
 		`uvm_do_with(req, {req.wr_rd==1; req.addr==`TXR; req.data=={7'h10,1'b0};});
-		//start + write
 		`uvm_do_with(req, {req.wr_rd==1; req.addr==`CR; req.data==8'h90;});
+		wait_for_tip();
 
-		//wait for completion (TIP to clear)
-		do begin
-			`uvm_do_with(req, {req.wr_rd==0; req.addr==`SR;});
-		end while (req.data[1] == 1'b1);
-
-		//Load data byte
-		`uvm_do_with(req, {req.wr_rd==1; req.addr==`TXR; req.data=={8'h04};});
-
-		//write
+		//Memory address (0x05) - this resets the pointer
+		`uvm_do_with(req, {req.wr_rd==1; req.addr==`TXR; req.data==8'h01;});
 		`uvm_do_with(req, {req.wr_rd==1; req.addr==`CR; req.data==8'h10;});
+		wait_for_tip();
 
-		//wait for completion (TIP to clear)
-		do begin
-			`uvm_do_with(req, {req.wr_rd==0; req.addr==`SR;});
-		end while (req.data[1] == 1'b1);
 
 		//-------------------------------------------------
-		//receive phase
+		//read phase
 		//-------------------------------------------------
 		//write slave address + read bit
 		`uvm_do_with(req, {req.wr_rd==1; req.addr==`TXR; req.data=={7'h10,1'b1};});
+		//repeated start + write
+		`uvm_do_with(req, {req.wr_rd==1; req.addr==`CR; req.data==8'h90;});
 
-		//repeated start + read
-		`uvm_do_with(req, {req.wr_rd==1; req.addr==`CR; req.data==8'hA0;});
+		wait_for_tip();
 
-
-		//wait for completion (TIP to clear)
-		do begin
-			`uvm_do_with(req, {req.wr_rd==0; req.addr==`SR;});
-		end while (req.data[1] == 1'b1);
-		
-		//read byte from slave
-		`uvm_do_with(req, {req.wr_rd==0; req.addr==`RXR;});
-
-		//NACK + Stop
+		//STO + RD + NACK
 		`uvm_do_with(req, {req.wr_rd==1; req.addr==`CR; req.data==8'h68;});
 
-		`uvm_do_with(req, {req.wr_rd==1; req.addr==`CTR; req.data==8'h00;});
+		wait_for_tip();
+
+		//read byte from slave
+		`uvm_do_with(req, {req.wr_rd==0; req.addr==`RXR;});
+		get_response(rsp);
+
+		if(rsp.data==8'hA5)
+			`uvm_info("RD_DATA", "Read back 0xA5", UVM_LOW)
+		else
+			`uvm_error("RD_ERR", $sformatf("Mismatch! Expected 0xA5, got 0x%0h",rsp.data))
+
+		//`uvm_do_with(req, {req.wr_rd==1; req.addr==`CTR; req.data==8'h00;});
 	endtask
 endclass
+
