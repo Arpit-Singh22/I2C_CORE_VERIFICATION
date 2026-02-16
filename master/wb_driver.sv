@@ -2,8 +2,10 @@ class wb_driver extends uvm_driver#(wb_tx);
 	virtual wb_if vif;
 	`uvm_component_utils(wb_driver)
 	`NEW_COMP
+	wb_tx rsp;
 
-	function void build();
+	function void build_phase(uvm_phase phase);
+		super.build_phase(phase);
 		if(!uvm_config_db#(virtual wb_if)::get(this, "","vif", vif))
 			`uvm_error("INTFERR", "Failed to get vif in driver")
 	endfunction
@@ -13,8 +15,12 @@ class wb_driver extends uvm_driver#(wb_tx);
 		forever begin
 			seq_item_port.get_next_item(req);
 			drive_tx(req);
-			//req.print();
-			seq_item_port.item_done();
+			if(req.wr_rd==0) begin
+				$cast(rsp, req);
+				rsp.set_id_info(req);
+				seq_item_port.item_done(rsp);
+			end
+			else seq_item_port.item_done();
 		end
 	endtask
 
