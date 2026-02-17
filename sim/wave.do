@@ -45,11 +45,8 @@ add wave -noupdate /top/dut/rd
 add wave -noupdate /top/dut/wr
 add wave -noupdate /top/dut/ack
 add wave -noupdate /top/dut/iack
-add wave -noupdate /uvm_pkg::uvm_reg_map::do_write/#ublk#215181159#1762/immed__1766
-add wave -noupdate /uvm_pkg::uvm_reg_map::do_read/#ublk#215181159#1802/immed__1806
-add wave -noupdate /uvm_pkg::uvm_component_name_check_visitor::visit/immed__262
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {278600 ps} 0}
+WaveRestoreCursors {{Cursor 1} {13707 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 175
 configure wave -valuecolwidth 100
