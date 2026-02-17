@@ -2,9 +2,8 @@ sim/*
 !run.do
 !list.svh
 !wave.do
+!cov.do
 *.swp
 !covhtmlreport/*
 sim_results/*
 !merged.ucdb
-!*.ucdb
-!run.do
