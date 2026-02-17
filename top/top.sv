@@ -56,7 +56,12 @@ module top;
 	  uvm_config_db#(virtual wb_if)::set(null, "*", "vif", pif);
 	  uvm_config_db#(virtual i2c_if)::set(null, "*", "i2c_bus", i2c_bus);
 	  //run_test("config_clock_test");
+	  //run_test("config_clock_400KHZ_test");
 	  //run_test("write_test");
-	  run_test("write_read_test");
+	  //run_test("write_read_test");
+	  //run_test("burst_write_read_test");
+	  //run_test("nack_test");
+	  //run_test("write_low_freq_test");
+	  run_test("reset_during_xfer_test");
 	end
 endmodule
