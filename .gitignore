@@ -3,6 +3,7 @@ sim/*
 !list.svh
 !wave.do
 *.swp
+!covhtmlreport/*
 sim_results/*
 !merged.ucdb
 !*.ucdb
