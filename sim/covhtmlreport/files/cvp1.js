@@ -1,0 +1,2 @@
+var g_data = {"20":["READ","WRITE"],"21":["PRER_LO","PRER_HI","CTR","TXR_RXR","CR_SR"],"22":["RXR","SR"],"23":["core_off","en_ien"],"24":["START_WRITE","STOP","START_REAE","ACK"],"29":["READ","WRITE"],"30":["PRER_LO","PRER_HI","CTR","TXR_RXR","CR_SR"],"31":["RXR","SR"],"32":["core_off","en_ien"],"33":["START_WRITE","STOP","START_REAE","ACK"]};
+processCoverpointsMapData(g_data);

@@ -1,0 +1,2 @@
+var g_data = {"name":"C:/Users/arpit/OneDrive/Desktop/Project/I2C_VERIFICATION/sim/../common/i2c_if.sv","src":"interface i2c_if;\n	tri scl;\n	tri sda;\n\n	//master side signals\n	logic scl_pad_o;\n	logic scl_padoen_o;\n	logic scl_pad_i;\n\n	logic sda_pad_o;\n	logic sda_padoen_o;\n	logic sda_pad_i;\n\n	modport phy_mp(\n		input scl,\n		input sda\n	);\nendinterface\n","lang":"verilog"};
+processSrcData(g_data);

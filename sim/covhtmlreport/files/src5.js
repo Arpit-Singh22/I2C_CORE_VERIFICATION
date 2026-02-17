@@ -1,0 +1,2 @@
+var g_data = {"name":"C:/Users/arpit/OneDrive/Desktop/Project/I2C_VERIFICATION/sim/../master/wb_seq_item.sv","src":"class wb_tx extends uvm_sequence_item;\n	rand bit [2:0] addr;\n	rand bit [7:0] data;\n	rand bit [3:0] sel;\n	rand bit wr_rd;\n\n	`uvm_object_utils_begin(wb_tx)\n		`uvm_field_int(addr, UVM_ALL_ON)\n		`uvm_field_int(data, UVM_ALL_ON)\n		`uvm_field_int(sel, UVM_ALL_ON)\n		`uvm_field_int(wr_rd, UVM_ALL_ON)\n	`uvm_object_utils_end\n	`NEW_OBJ\nendclass\n","lang":"verilog"};
+processSrcData(g_data);

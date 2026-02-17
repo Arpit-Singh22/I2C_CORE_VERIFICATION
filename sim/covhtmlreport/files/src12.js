@@ -1,0 +1,2 @@
+var g_data = {"name":"C:/Users/arpit/OneDrive/Desktop/Project/I2C_VERIFICATION/sim/../top/i2c_env.sv","src":"class i2c_env extends uvm_env;\n  `uvm_component_utils(i2c_env)\n  `NEW_COMP\n  wb_agent agt;\n\n  function void build_phase(uvm_phase phase);\n    agt = wb_agent::type_id::create(\"wb_agent\", this);\n  endfunction\nendclass\n","lang":"verilog"};
+processSrcData(g_data);

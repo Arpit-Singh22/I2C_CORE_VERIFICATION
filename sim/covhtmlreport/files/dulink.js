@@ -1,0 +1,2 @@
+var g_data = {"9":["work.i2c_assertions",100.00,1],"2":["work.i2c_if",50.00,1],"8":["work.i2c_master_bit_ctrl",86.69,1],"7":["work.i2c_master_byte_ctrl",82.46,1],"6":["work.i2c_master_top",73.34,1],"5":["work.i2c_slave_model",91.50,1],"3":["work.list_svh_unit",45.56,1],"4":["work.top",75.00,1],"1":["work.wb_if",98.14,1]};
+processDuLinks(g_data);

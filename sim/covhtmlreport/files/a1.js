@@ -1,0 +1,2 @@
+var g_data = {"17":{"pr":"/top/dut/i2c_chk","ty":2,"dui":9,"dun":"work.i2c_assertions","asserts":[{"n":["START_COND_ASSERT",18,23],"h":[0,10,5273602,0,5273612,0,6]},{"n":["STOP_COND_ASSERT",18,31],"h":[0,14,5273598,0,5273612,0,8]}],"ad":1},"9":{"pr":"work.i2c_assertions","ty":0,"asserts":[{"n":["START_COND_ASSERT",18,23],"h":[0,10,5273602,0,5273612,0,6]},{"n":["STOP_COND_ASSERT",18,31],"h":[0,14,5273598,0,5273612,0,8]}],"ad":1}}
+processAssertionsData(g_data);
