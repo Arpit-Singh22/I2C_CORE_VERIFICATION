@@ -3,3 +3,7 @@ sim/*
 !list.svh
 !wave.do
 *.swp
+sim_results/*
+!merged.ucdb
+!*.ucdb
+!run.do
